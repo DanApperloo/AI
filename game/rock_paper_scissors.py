@@ -1,10 +1,17 @@
-__author__ = 'Dan'
+__author__ = 'Dan Apperloo'
+__email__ = 'danapperloo@gmail.com'
 
 
+#########################################################################
+# Functions
+#########################################################################
 class State:
     Rock = 0
     Paper = 1
     Scissors = 2
+
+    def __init__(self):
+        pass
 
 
 class Outcome:
@@ -12,10 +19,16 @@ class Outcome:
     Tie = 1
     Win = 2
 
+    def __init__(self):
+        pass
+
 
 class RPSGame:
     player_1_input = None
     player_2_input = None
+
+    def __init__(self):
+        pass
 
     @classmethod
     def submit_move(cls, ai_id, state):

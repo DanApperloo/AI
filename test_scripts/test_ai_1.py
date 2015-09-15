@@ -1,12 +1,20 @@
-from game import rock_paper_scissors as RPS, behaviour_base
+__author__ = 'Dan Apperloo'
+__email__ = 'danapperloo@gmail.com'
 
-__author__ = 'Dan'
+
+#########################################################################
+# Imports
+#########################################################################
+from game import rock_paper_scissors as rps, behaviour_base
 
 
-class test(behaviour_base.AIBase):
+#########################################################################
+# Functions
+#########################################################################
+class TestA(behaviour_base.BaseBehaviour):
 
     def __init__(self, ai_id):
-        super(test, self).__init__(ai_id)
+        super(TestA, self).__init__(ai_id)
         print "Test AI 1 " + str(ai_id)
 
     def initialize(self):
@@ -14,7 +22,7 @@ class test(behaviour_base.AIBase):
 
     def determine_move(self):
         print "Test AI 1 determine move"
-        RPS.RPSGame.submit_move(self.obj_id, RPS.State.Rock)
+        rps.RPSGame.submit_move(self.obj_id, rps.State.Rock)
 
     def update_state(self, last_state):
         print "Test AI 1 update state"
