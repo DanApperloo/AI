@@ -1,0 +1,1 @@
+Allows Users to create AI scripts in Python that satisfy a given games API.
