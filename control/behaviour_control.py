@@ -18,7 +18,7 @@ from behaviour_index import BehaviourIndex
 #########################################################################
 # Functions
 #########################################################################
-class BehaviourBuilder(object):
+class BehaviourControl(object):
 
     INDEX_REGEX = '*.py'
 
@@ -87,10 +87,8 @@ class BehaviourBuilder(object):
         try:
             self._validate_behaviours(requested_behaviours)
             self._load_behaviours(requested_behaviours)
-        except RuntimeError as e:
-            print "Runtime Error({0}): {1}".format(e.errno, e.strerror)
-        except IOError as e:
-            print "I/O Error({0}): {1}".format(e.errno, e.strerror)
+        except (RuntimeError, IOError) as e:
+            print "Exception ({0}): {1}".format(e.errno, e.strerror)
             self._remove_all_validated_scripts()
             raise
         return requested_behaviours
@@ -229,8 +227,7 @@ class BehaviourBuilder(object):
                     if inspect.isclass(obj):
                         # Prevents getting a hit on the import of the base class or base class instantiation
                         if not inspect.isabstract(obj):
-                            if issubclass(obj, self.comparison_base_class):
-
+                            if BehaviourControl.__inherits_from(obj, self.comparison_base_class.__name__):
                                 # Log details about script
                                 if common.DEBUG:
                                     print "Behaviour Class:  " + str(name)
@@ -273,3 +270,19 @@ class BehaviourBuilder(object):
             if re.search(self.VALIDATION_PREFIX_REGEX, filename):
                 os.remove(os.path.join(self.VALIDATION_DIRECTORY, filename))
         return
+
+    @staticmethod
+    def __inherits_from(child, parent_name):
+        """
+        Uses inspect to determine if class is a desired sub class.
+        This could be circumvented but the combination of using ABC class for abstraction
+        highly mitigates possible damage.
+
+        :param child: object to test
+        :param parent_name: name of desired parent class
+        :return: True if child is subclassing parent_name, false otherwise
+        """
+        if inspect.isclass(child):
+            if parent_name in [parent.__name__ for parent in inspect.getmro(child)[1:]]:
+                return True
+        return False

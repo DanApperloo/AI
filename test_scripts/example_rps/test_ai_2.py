@@ -5,8 +5,8 @@ __email__ = 'danapperloo@gmail.com'
 #########################################################################
 # Imports
 #########################################################################
-from example.example_rps_game import RPSGame, State
-from example.example_rps_behaviour_base import RPSBaseBehaviour
+from game.example.example_rps_game import RPSGame, State
+from game.example.example_rps_behaviour_base import RPSBaseBehaviour
 
 
 #########################################################################

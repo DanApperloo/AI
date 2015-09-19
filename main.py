@@ -5,9 +5,8 @@ __email__ = 'danapperloo@gmail.com'
 #########################################################################
 # Imports
 #########################################################################
-from example.example_rps_game import RPSGame
-from example.example_rps_behaviour_base import RPSBaseBehaviour
-from control.behaviour_control import BehaviourBuilder
+from control.behaviour_control import BehaviourControl
+from game.game_control import GameControl
 
 
 #########################################################################
@@ -15,9 +14,13 @@ from control.behaviour_control import BehaviourBuilder
 #########################################################################
 if __name__ == "__main__":
 
-    # Load the Behaviour Builder
-    behaviour_builder = BehaviourBuilder(RPSBaseBehaviour,
-                                         "./test_scripts/example_rps/",
+    # Load the desired games index
+    game_index = GameControl.get_game_index("Rock-Paper-Scissors")
+    game_object = game_index.game_constructor()
+
+    # Load the Game's Behaviour Builder
+    behaviour_builder = BehaviourControl(game_index.behaviour_base_class,
+                                         game_index.behaviour_sub_dir,
                                          [])
 
     try:
@@ -28,24 +31,11 @@ if __name__ == "__main__":
         for ai in bhv:
             assert ai.secure is True
 
+        # Set the game players
+        game_object.set_players([bhv[0].obj, bhv[1].obj])
+
         # Run the Game
-        results = []
-        for i in range(0, 10):
-            for ai in bhv:
-                if ai.obj is not None:
-                    ai.obj.determine_move()
-
-            results.append(RPSGame.calculate_result())
-
-            for ai in bhv:
-                if ai.obj is not None:
-                    ai.obj.update_state(results[i])
-
-        # Print the Results
-        print "Printing Results"
-        for game in results:
-            print game
-        print ''
+        game_object.game_loop()
 
         # Perform Clean Up
         behaviour_builder.cleanup()

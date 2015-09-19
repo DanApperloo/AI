@@ -23,12 +23,34 @@ class Outcome:
         pass
 
 
-class RPSGame:
+class RPSGame(object):
     player_1_input = None
     player_2_input = None
 
     def __init__(self):
-        pass
+        self.players = None
+        return
+
+    def set_players(self, player_list):
+        self.players = player_list
+
+    def game_loop(self):
+
+        results = []
+        for i in range(0, 10):
+            for player in self.players:
+                player.determine_move()
+
+            results.append(RPSGame.calculate_result())
+
+            for player in self.players:
+                player.update_state(results[i])
+
+        # Print the Results
+        print "Printing Results"
+        for game in results:
+            print game
+        return
 
     @classmethod
     def submit_move(cls, ai_id, state):
