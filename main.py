@@ -5,8 +5,9 @@ __email__ = 'danapperloo@gmail.com'
 #########################################################################
 # Imports
 #########################################################################
-from control import behaviour_loader, behaviour_validator
-from game import rock_paper_scissors as rps
+from example.example_rps_game import RPSGame
+from example.example_rps_behaviour_base import RPSBaseBehaviour
+from control.behaviour_control import BehaviourBuilder
 
 
 #########################################################################
@@ -14,32 +15,42 @@ from game import rock_paper_scissors as rps
 #########################################################################
 if __name__ == "__main__":
 
-    # Validate the Scripts and move them into staging
-    val = behaviour_validator.validate_behaviours("./test_scripts/",
-                                                  ["test_ai_1.py",
-                                                   "test_ai_2.py"])
+    # Load the Behaviour Builder
+    behaviour_builder = BehaviourBuilder(RPSBaseBehaviour,
+                                         "./test_scripts/example_rps/",
+                                         [])
 
-    # Load the valid behaviours
-    ais = behaviour_loader.load_behaviours(val)
+    try:
+        bhv = behaviour_builder.get_behaviour_indexes_by_name(["test_ai_1.py",
+                                                               "test_ai_2.py"])
 
-    # Run the Game
-    results = []
-    for i in range(0, 10):
-        for ai in ais:
-            if ai is not None:
-                ai.determine_move()
+        # Ensure Valid scripts for test
+        for ai in bhv:
+            assert ai.secure is True
 
-        results.append(rps.RPSGame.calculate_result())
+        # Run the Game
+        results = []
+        for i in range(0, 10):
+            for ai in bhv:
+                if ai.obj is not None:
+                    ai.obj.determine_move()
 
-        for ai in ais:
-            if ai is not None:
-                ai.update_state(results[i])
+            results.append(RPSGame.calculate_result())
 
-    # Perform Clean Up
-    behaviour_validator.remove_validated_scripts()
+            for ai in bhv:
+                if ai.obj is not None:
+                    ai.obj.update_state(results[i])
 
-    # Print the Results
-    print "Printing Results"
-    for game in results:
-        print game
-    print ''
+        # Print the Results
+        print "Printing Results"
+        for game in results:
+            print game
+        print ''
+
+        # Perform Clean Up
+        behaviour_builder.cleanup()
+
+    except Exception as e:
+        # Perform Clean Up
+        behaviour_builder.cleanup()
+        raise
