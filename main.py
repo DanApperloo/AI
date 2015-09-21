@@ -15,7 +15,7 @@ from game.game_control import GameControl
 if __name__ == "__main__":
 
     # Load the desired games index
-    game_index = GameControl.get_game_index("Rock-Paper-Scissors")
+    game_index = GameControl.get_game_index("Simple-Shooter")
     game_object = game_index.game_constructor()
 
     # Load the Game's Behaviour Builder
@@ -29,13 +29,13 @@ if __name__ == "__main__":
 
         # Ensure Valid scripts for test
         for ai in bhv:
-            assert ai.secure is True
+            assert ai.loaded is True
 
         # Set the game players
-        game_object.set_players([bhv[0].obj, bhv[1].obj])
+        game_object.set_players([bhv[0], bhv[1]])
 
         # Run the Game
-        game_object.game_loop()
+        game_object.start()
 
         # Perform Clean Up
         behaviour_builder.cleanup()

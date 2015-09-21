@@ -28,8 +28,6 @@ class BehaviourControl(object):
 
     MODULE_PREFIX = "staging."
 
-    ID_GENERATOR = 0
-
     BASIC_BANNED_API = ["\s*import\s*os"]
 
     def __init__(self, base_class, entry_path, banned_api):
@@ -93,36 +91,12 @@ class BehaviourControl(object):
             raise
         return requested_behaviours
 
-    def instantiate_behaviours(self, behaviours):
-        """
-        Instantiate the desired behaviours if possible.
-
-        :param behaviours: list of behaviour indexes
-        :return: nothing
-        """
-        for index in behaviours:
-            # Attempt to reload the error
-            if index.missing is False:
-                if index.secure is True:
-                    if index.loaded is False:
-                        if index.constructor is not None:
-                            index.obj = index.constructor(self.ID_GENERATOR)
-                            self.ID_GENERATOR += 1
-                            index.loaded = True
-                            index.status = BehaviourIndex.STATUS_SUCCESS
-
-            # If desired index wasn't loaded, set RELOAD Error
-            if index.loaded is False:
-                index.status = BehaviourIndex.STATUS_RELOAD_ERROR
-        return
-
     def cleanup(self):
         """
         Removes any validation scripts and unload behaviours.
 
         :return: Nothing
         """
-        self._unload_all_behaviours()
         self._remove_all_validated_scripts()
         return
 
@@ -236,27 +210,13 @@ class BehaviourControl(object):
                                 # Set the found class obj into the behaviour index
                                 index.constructor = obj
                                 index.loaded = True
-                                index.obj = index.constructor(self.ID_GENERATOR)
                                 index.status = BehaviourIndex.STATUS_SUCCESS
-                                self.ID_GENERATOR += 1
                                 break
 
                 # If no Behaviour was found, append a None to the list
                 if index.loaded is False:
                     index.status = BehaviourIndex.STATUS_LOAD_ERROR
                     print "Error: Script does not Subclass Behaviour API. File: " + str(ai_module)
-        return
-
-    def _unload_all_behaviours(self):
-        """
-        Unload and free any loaded behaviours.
-
-        :return: nothing
-        """
-        for index in self.behaviour_index_list:
-            if index.loaded is True:
-                del index.obj
-                index.loaded = False
         return
 
     def _remove_all_validated_scripts(self):

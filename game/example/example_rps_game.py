@@ -34,7 +34,7 @@ class RPSGame(object):
     def set_players(self, player_list):
         self.players = player_list
 
-    def game_loop(self):
+    def start(self):
 
         results = []
         for i in range(0, 10):
